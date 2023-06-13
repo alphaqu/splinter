@@ -1,0 +1,32 @@
+[package]
+name = "splinter"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+splinter-icon = { path = "libs/splinter-icon" }
+splinter-animation = { path = "libs/splinter-animation" }
+
+
+tracing = "0.1.37"
+tracing-subscriber = "0.3.17"
+
+rfd = "0.11.4"
+eframe = "0.21.3"
+zip = "0.6.6"
+rand = "0.8.5"
+crossbeam = "0.8.2"
+image = "0.24.6"
+serde = "1.0.163"
+serde_json = "1.0.96"
+material-color-utilities-rs = "0.2.1"
+
+[profile.dev]
+opt-level = 1
+[workspace]
+members = [
+    "libs/splinter-icon",
+    "libs/splinter-animation"
+]
