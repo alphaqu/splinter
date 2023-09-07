@@ -8,8 +8,9 @@ use parking_lot::Mutex;
 use std::any::{type_name, Any};
 use std::sync::Arc;
 
+#[derive(Clone)]
 pub struct AnimationManager {
-    inner: Mutex<AnimationManagerInner>,
+    inner: Arc<Mutex<AnimationManagerInner>>,
 }
 
 impl AnimationManager {
@@ -17,12 +18,12 @@ impl AnimationManager {
         info!("Created animation manager");
 
         AnimationManager {
-            inner: Mutex::new(AnimationManagerInner {
+            inner: Arc::new(Mutex::new(AnimationManagerInner {
                 config,
                 animations: Default::default(),
                 any_active: false,
                 time: 0.0,
-            }),
+            })),
         }
     }
 

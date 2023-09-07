@@ -1,8 +1,10 @@
 use std::f32::consts::{PI, TAU};
-use std::time::Instant;
 
-use crate::prog::Progress;
-use eframe::egui::{Color32, Painter, Pos2, Rect, Response, Sense, Shape, Stroke, Ui, Vec2, Widget};
+use eframe::egui::{
+    Color32, Painter, Pos2, Rect, Response, Sense, Shape, Stroke, Ui, Vec2, Widget,
+};
+use crate::ui::progress::Progress;
+
 
 pub struct ProgressSpinner {
     /// The size of the spinner.
@@ -32,8 +34,7 @@ impl ProgressSpinner {
                     let pos = i as f32 / steps as f32;
                     let angle = start + pos * (end - start);
                     let (sin, cos) = angle.sin_cos();
-                    rect.center()
-                        + (((radius) / 2.0) - (width / 2.0)) * Vec2::new(cos, sin)
+                    rect.center() + (((radius) / 2.0) - (width / 2.0)) * Vec2::new(cos, sin)
                 })
                 .collect();
 

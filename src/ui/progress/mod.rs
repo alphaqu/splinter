@@ -1,8 +1,14 @@
 use std::mem::swap;
 use std::time::Instant;
-use eframe::egui::{Color32, Context, Id, Response};
 
-pub mod spinner;
+use eframe::egui::{Color32, Context, Id};
+
+mod spinner;
+
+pub use spinner::*;
+use crate::ui::ProgressStatus;
+
+pub struct ProgressSystem(pub Option<ProgressStatus>);
 
 pub struct Progress {
     /// Current progress of the spinner.
@@ -109,20 +115,20 @@ impl ProgressState {
 
                 let pos = time % 1.0;
                 let start_wave = pos;
-                let end_wave = if pos > 0.25 { (pos - 0.25) / 0.75} else { 0.0 };
+                let end_wave = if pos > 0.25 { (pos - 0.25) / 0.75 } else { 0.0 };
                 [
                     (time + (ease_out(start_wave))),
                     (time + (ease_out(end_wave))),
                 ]
-               //let pos = (time * 1.5) % 2.0;
+                //let pos = (time * 1.5) % 2.0;
 
-               //let start_wave = if pos < 1.5 { pos / 1.5 } else { 1.0 };
-               //let end_wave = if pos > 0.5 { (pos - 0.5) / 1.5 } else { 0.0 };
+                //let start_wave = if pos < 1.5 { pos / 1.5 } else { 1.0 };
+                //let end_wave = if pos > 0.5 { (pos - 0.5) / 1.5 } else { 0.0 };
 
-               //[
-               //    (start_wave),
-               //    (end_wave),
-               //]
+                //[
+                //    (start_wave),
+                //    (end_wave),
+                //]
             }
             ProgressState::Transition {
                 transition_start,
