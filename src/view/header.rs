@@ -1,5 +1,6 @@
 use std::os::linux::raw::stat;
 use std::path::PathBuf;
+use dirs::home_dir;
 use eframe::egui::{Align, Align2, Color32, Direction, FontFamily, FontId, Id, Layout, Mesh, Pos2, Rect, Response, Sense, Spinner, Ui, Vec2, Widget};
 use eframe::epaint::Vertex;
 use rfd::FileDialog;
@@ -126,11 +127,13 @@ impl Header {
                     }
                         .to_string(),
                     || {
-                        if let Some(path) = FileDialog::new()
+                        let option = FileDialog::new()
                             .set_directory(
-                                path.unwrap_or(PathBuf::from("/")),
+                                path.unwrap_or(home_dir().unwrap_or(PathBuf::from("/"))),
                             )
-                            .pick_folder()
+                            .pick_folder();
+                        println!("{option:?}");
+                        if let Some(path) = option
                         {
                             self.progress = Some(ProgressStatus::Indeterminate);
                             commander.dispatch(ModpackEvent::Load(path));
