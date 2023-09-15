@@ -51,6 +51,7 @@ impl Header {
                     icon!("cancel"),
                     color::RED.gamma_multiply(0.2),
                     color::RED,
+                    "If your issue does no longer persist, \nyou may press this to swap the enabled mods.",
                     || {
                         commander.dispatch(ModpackOperationEvent::Invert);
                     },
@@ -63,6 +64,8 @@ impl Header {
                     icon!("bug_report"),
                     color::GREEN.gamma_multiply(0.2),
                     color::GREEN,
+                    "If your issue does persist, \npressing this will disable half of the mods.",
+
                     || {
                         commander.dispatch(ModpackOperationEvent::Split);
                     },
@@ -80,6 +83,7 @@ impl Header {
                     icon!("redo"),
                     color::MANTLE,
                     color::SUBTEXT1,
+                    "Redoes your last operation",
                     || {
                         commander.dispatch(ModpackOperationEvent::Redo);
                     },
@@ -97,6 +101,7 @@ impl Header {
                     icon!("undo"),
                     color::MANTLE,
                     color::SUBTEXT1,
+                    "Undoes your last operation",
                     || {
                         commander.dispatch(ModpackOperationEvent::Undo);
                     },
@@ -144,6 +149,7 @@ impl Header {
                     icon!("home"),
                     color::MANTLE,
                     color::SUBTEXT1,
+                    "Exit the current session.",
                     || {
                         commander.dispatch(ModpackEvent::Exit);
                     },
@@ -361,6 +367,7 @@ impl HeaderEntry {
         icon: u32,
         bg: Color32,
         fg: Color32,
+        tooltip: &str,
         func: impl FnOnce(),
     ) {
         let animation = animation(ui);
@@ -378,6 +385,7 @@ impl HeaderEntry {
                     id.with("header-entry"),
                     Sense::click_and_drag(),
                 );
+                response.clone().on_hover_text(tooltip);
 
                 let rect = ui.max_rect();
                 let painter = ui.painter();

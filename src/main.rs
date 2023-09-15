@@ -70,8 +70,9 @@ fn main() {
             let mut style = Style::default();
             let mut visuals = Visuals::dark();
             visuals.override_text_color = Some(color::TEXT);
-            visuals.panel_fill = color::RED;
-            visuals.window_fill = color::RED;
+            visuals.panel_fill = Color32::from_rgb(30, 30, 30);
+            visuals.window_fill = Color32::from_rgb(30, 30, 30);
+
             visuals.widgets.inactive.bg_fill = Color32::from_rgb(30, 30, 30);
             visuals.widgets.inactive.rounding = Rounding::same(8.0);
             style.visuals = visuals;
