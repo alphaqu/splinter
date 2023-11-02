@@ -31,6 +31,13 @@ impl HomeView {
 		}
 
 
+		// Sort by last used
+		suggested_instances.sort_by(|v0, v1| {
+			let v0 = v0.metadata().ok().and_then(|v| v.modified().ok());
+			let v1 = v1.metadata().ok().and_then(|v| v.modified().ok());
+			v1.cmp(&v0)
+		});
+
 		// Clean up paths
 		let home = dirs::home_dir();
 		if let Some(home) = home {

@@ -202,7 +202,7 @@ impl Modpack {
             to_split.shuffle(&mut rng);
 
             // We find out how many we actually disabled after the dependencies have been applied.
-            disabled = original_len - to_split.len();
+            disabled = original_len.saturating_sub(to_split.len());
 
             // If we have disabled the target amount, then we are done.
             // Else we continue removing entries and then checking after their dependencies.

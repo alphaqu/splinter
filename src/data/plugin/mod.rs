@@ -45,7 +45,7 @@ enum FileStatus {
     Disabled
 }
 impl Plugin {
-    pub fn new(path: PathBuf, ctx: &Context) -> Option<Plugin> {
+    pub fn new(mut path: PathBuf, ctx: &Context) -> Option<Plugin> {
         let extension = path.extension()?.to_str()?;
         warn!("{extension:?}");
 
@@ -53,10 +53,12 @@ impl Plugin {
             "jar" => FileStatus::Enabled,
             "disabled" => FileStatus::ForceDisabled,
             "tempdisabled" => {
-               if let Err(error) =  rename(&path, path.with_extension("")) {
+                let new_path = path.with_extension("");
+                if let Err(error) =  rename(&path, &new_path) {
                    error!("Failed to un-disable {error:?}");
-                   FileStatus::Disabled
+                   return None;
                } else {
+                    path = new_path;
                    FileStatus::Enabled
                }
             },
