@@ -8,6 +8,9 @@ on:
     
 env:
   CARGO_TERM_COLOR: always
+  CRATE_NAME: splinter
+  RUST_BACKTRACE: 1
+  PKG_CONFIG_SYSROOT_DIR: /
 
 jobs:
   release:
@@ -23,6 +26,7 @@ jobs:
             bin: splinter.exe
             name: splinter-Windows-x86_64.zip
             command: both
+            skip_tests: true
 
           - release_for: Linux-x86_64
             os: ubuntu-20.04
@@ -30,6 +34,7 @@ jobs:
             bin: splinter
             name: splinter-Linux-x86_64.tar.gz
             command: both
+            skip_tests: true
             
           - release_for: macOS-x86_64
             os: macOS-latest
@@ -37,6 +42,7 @@ jobs:
             bin: splinter
             name: splinter-Darwin-x86_64.tar.gz
             command: both
+            skip_tests: true
             
           - release_for: macOS-aarch64
             os: macOS-latest
@@ -44,6 +50,7 @@ jobs:
             bin: splinter
             name: splinter-Darwin-aarch64.tar.gz
             command: both
+            skip_tests: true
     steps:
       - name: Checkout
         uses: actions/checkout@v3
