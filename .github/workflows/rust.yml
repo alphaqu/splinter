@@ -61,7 +61,7 @@ jobs:
         if:  matrix.platform.os == 'ubuntu-20.04'
       - name: Install musl-tools on Linux
         run: sudo apt-get update --yes && sudo apt-get install --yes musl-tools
-        if: contains(matrix.platform.name, 'musl')
+        if: contains(matrix.platform.target, 'musl')
       - name: Build binary
         uses: houseabsolute/actions-rust-cross@v0
         with:
