@@ -1,8 +1,10 @@
 name: Rust Linux
 
 on:
-  release:
-    types: [ published ]
+ push:
+    branches: [ "master" ]
+ pull_request:
+    branches: [ "master" ]
     
 env:
   CARGO_TERM_COLOR: always
