@@ -10,7 +10,6 @@ env:
   CARGO_TERM_COLOR: always
   CRATE_NAME: splinter
   RUST_BACKTRACE: 1
-  PKG_CONFIG_SYSROOT_DIR: /
 
 jobs:
   release:
