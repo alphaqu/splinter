@@ -188,10 +188,14 @@ impl Modpack {
                 disabled, to_disable
             );
             // We disabled until we either hit the disabled count, or we run out of entries to pop.
-            while disabled < to_disable && let Some(id) = to_split.pop() {
-				self.plugins.get_mut(&id).unwrap().status = PluginStatus::Disabled;
-				debug!("Disabled {id}");
-				disabled += 1;
+            while disabled < to_disable {
+                if let Some(id) = to_split.pop()  {
+                    self.plugins.get_mut(&id).unwrap().status = PluginStatus::Disabled;
+                    debug!("Disabled {id}");
+                    disabled += 1;
+                } else {
+                    break;
+                }
 			}
 
             self.enable_dependencies();
