@@ -25,32 +25,28 @@ jobs:
             target: x86_64-pc-windows-msvc
             bin: splinter.exe
             name: splinter-Windows-x86_64.zip
-            command: both
-            skip_tests: true
+            command: build
 
           - release_for: Linux-x86_64
             os: ubuntu-20.04
             target: x86_64-unknown-linux-musl
             bin: splinter
             name: splinter-Linux-x86_64.tar.gz
-            command: both
-            skip_tests: true
+            command: build
             
           - release_for: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
             bin: splinter
             name: splinter-Darwin-x86_64.tar.gz
-            command: both
-            skip_tests: true
+            command: build
             
           - release_for: macOS-aarch64
             os: macOS-latest
             target: aarch64-apple-darwin
             bin: splinter
             name: splinter-Darwin-aarch64.tar.gz
-            command: both
-            skip_tests: true
+            command: build
     steps:
       - name: Checkout
         uses: actions/checkout@v3
