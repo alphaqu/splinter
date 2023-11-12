@@ -14,7 +14,7 @@ env:
 
 jobs:
   release:
-    name: ${{ matrix.platform.os_name }} with rust ${{ matrix.toolchain }}
+    name: ${{ matrix.platform.release_for }} rust
     runs-on: ${{ matrix.platform.os }}
     strategy:
       fail-fast: false
