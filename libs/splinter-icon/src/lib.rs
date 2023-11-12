@@ -24,7 +24,7 @@ fn create_lookup() -> AHashMap<String, String> {
     let mut lookup = AHashMap::new();
     for entry in codepoints.split('\n') {
         let (name, codepoint) = entry.split_once(' ').unwrap();
-        lookup.insert(name.to_string(), format!("0x{codepoint}"));
+        lookup.insert(name.to_string(), format!("0x{}", codepoint.trim()));
     }
     lookup
 }
