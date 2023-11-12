@@ -1,19 +1,19 @@
-use std::os::linux::raw::stat;
 use std::path::PathBuf;
+
 use dirs::home_dir;
-use eframe::egui::{Align, Align2, Color32, Direction, FontFamily, FontId, Id, Layout, Mesh, Pos2, Rect, Response, Sense, Spinner, Ui, Vec2, Widget};
+use eframe::egui::{Align, Align2, Color32, Direction, FontFamily, FontId, Id, Layout, Mesh, Pos2, Rect, Sense, Ui, Vec2, Widget};
 use eframe::epaint::Vertex;
 use rfd::FileDialog;
-use tracing::info;
 
-use splinter_animation::{AnimationImpl,Lerp};
-use splinter_event::{ EventSystem, EventTracker};
+use splinter_animation::{AnimationImpl, Lerp};
+use splinter_event::EventTracker;
 use splinter_icon::icon;
+
 use crate::{ApplicationState, ModpackEvent, ModpackStatus};
-use crate::data::{Modpack, ModpackOperationEvent};
+use crate::data::ModpackOperationEvent;
+use crate::ui::{animation, color, ProgressStatus};
 use crate::ui::icon::Icon;
-use crate::ui::progress::{Progress, ProgressSpinner, ProgressSystem};
-use crate::ui::{animation, color, progress, ProgressStatus, UiSystem};
+use crate::ui::progress::{Progress, ProgressSpinner};
 
 #[derive(Debug)]
 pub struct ProgressEvent(pub Option<ProgressStatus>);
@@ -115,11 +115,9 @@ impl Header {
                         Some(path.clone())
                     }
                 };
-                let ctx = ui.ctx().clone();
                 HeaderEntry::path(
                     ui,
                     self.progress,
-                    icon!("folder_open"),
                     if let Some(path) = &path {
                         path.to_str().unwrap_or("")
                     } else {
@@ -238,7 +236,6 @@ impl HeaderEntry {
     pub fn path(
         ui: &mut Ui,
         progress: Option<ProgressStatus>,
-        icon: u32,
         text: String,
         func: impl FnOnce(),
     ) {
@@ -373,7 +370,6 @@ impl HeaderEntry {
         tooltip: &str,
         func: impl FnOnce(),
     ) {
-        let animation = animation(ui);
         let desired_size = Vec2::new(HEADER_HEIGHT, HEADER_HEIGHT);
         ui.allocate_ui_with_layout(
             desired_size,

@@ -1,6 +1,5 @@
 use ahash::AHashMap;
 use lazy_static::lazy_static;
-use proc_macro::{Literal, Span};
 use syn::__private::ToTokens;
 use syn::{LitInt, LitStr};
 

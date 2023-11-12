@@ -5,32 +5,30 @@ use std::sync::Arc;
 
 use eframe::egui::{Context, FontFamily, FontId, RichText, ScrollArea, Ui};
 use rand::prelude::SliceRandom;
-use rayon::iter::*;
 use tracing::{debug, info, warn};
 
 pub use loader::ModpackLoader;
-pub use metadata::ModpackMetadata;
-use splinter_event::{EventSystem, EventTracker};
+use splinter_event::EventTracker;
+
 use crate::{ApplicationState, ModpackStatus};
 pub use crate::data::Plugin;
 pub use crate::data::PluginStatus;
-use crate::ui::{color, UiSystem};
+use crate::ui::color;
 
 mod loader;
 mod metadata;
-
 
 #[derive(Debug)]
 pub enum ModpackOperationEvent {
     Undo,
     Redo,
     Split,
-    Invert
+    Invert,
 }
 
 pub struct Modpack {
     path: PathBuf,
-    metadata: ModpackMetadata,
+    //metadata: ModpackMetadata,
     plugins: PluginList,
     loader: Option<ModpackLoader>,
 
@@ -46,7 +44,7 @@ pub struct Modpack {
 
 impl Modpack {
     pub fn new(mut path: PathBuf, ctx: &Context) -> Option<Modpack> {
-        if let Ok(new_path) = path.strip_prefix("~"){
+        if let Ok(new_path) = path.strip_prefix("~") {
             path = dirs::home_dir().unwrap().join(new_path);
         }
         if path.ends_with("mods") {
@@ -60,7 +58,7 @@ impl Modpack {
         info!("Loading {path:?}");
         if let Ok(dir) = read_dir(path.join("mods")) {
             return Some(Modpack {
-                metadata: ModpackMetadata::new(&path),
+                //metadata: ModpackMetadata::new(&path),
                 path,
                 plugins: PluginList::new(),
                 loader: Some(ModpackLoader::new(
@@ -121,7 +119,10 @@ impl Modpack {
                             PluginStatus::NotTheProblem => "Not faulty",
                         })
                         .color(color::TEXT)
-                            .font(FontId::new(18.0, FontFamily::Name(Arc::from("Roboto-Bold"))))
+                        .font(FontId::new(
+                            18.0,
+                            FontFamily::Name(Arc::from("Roboto-Bold")),
+                        )),
                     );
                 });
                 ui.add_space(4.0);
@@ -189,14 +190,14 @@ impl Modpack {
             );
             // We disabled until we either hit the disabled count, or we run out of entries to pop.
             while disabled < to_disable {
-                if let Some(id) = to_split.pop()  {
+                if let Some(id) = to_split.pop() {
                     self.plugins.get_mut(&id).unwrap().status = PluginStatus::Disabled;
                     debug!("Disabled {id}");
                     disabled += 1;
                 } else {
                     break;
                 }
-			}
+            }
 
             self.enable_dependencies();
             to_split = self.splittable_plugins();
@@ -451,11 +452,11 @@ impl PluginList {
     }
 }
 
-
 struct State {
-    plugins: HashMap<String, PluginStatus>
+    plugins: HashMap<String, PluginStatus>,
 }
 
+#[allow(dead_code)]
 struct AskingEnable {
     id: String,
     depended_by: Vec<String>,
@@ -463,6 +464,7 @@ struct AskingEnable {
 }
 
 #[derive(Copy, Clone)]
+#[allow(dead_code)]
 enum AskingKind {
     SplitDependency,
     MakingForce,

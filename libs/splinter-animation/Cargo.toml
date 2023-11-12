@@ -8,7 +8,7 @@ edition = "2021"
 [dependencies]
 log = "0.4"
 serde = { version = "1", features = ["derive"] }
-egui = "0.22.0"
+egui = "0.23"
 
 parking_lot = "0.12"
 ahash = "0.8"

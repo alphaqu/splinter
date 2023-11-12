@@ -3,7 +3,7 @@ use eframe::egui::{
     Align2, Color32, FontFamily, FontId, Painter, Pos2, Rect, Response, Sense, Ui, Vec2, Widget,
 };
 
-pub fn draw_icon(painter: &Painter, icon: u32, mut pos: Pos2, size: f32, color: Color32) {
+pub fn draw_icon(painter: &Painter, icon: u32, pos: Pos2, size: f32, color: Color32) {
     let icon = char::from_u32(icon).expect("Could not parse icon char");
     let text = icon.to_string();
 

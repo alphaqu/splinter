@@ -3,12 +3,9 @@ use std::time::Instant;
 
 use eframe::egui::{Color32, Context, Id};
 
-mod spinner;
-
 pub use spinner::*;
-use crate::ui::ProgressStatus;
 
-pub struct ProgressSystem(pub Option<ProgressStatus>);
+mod spinner;
 
 pub struct Progress {
     /// Current progress of the spinner.
@@ -67,10 +64,10 @@ impl ProgressState {
             let to = next_state.calc_points(speed);
 
             let from_length = from[1] - from[0];
-            let to_length = (to[1] - to[0]);
+            let to_length = to[1] - to[0];
 
             let start = from[0] % 1.0;
-            let mut start_end = (1.0 - start) + to[0];
+            let start_end = (1.0 - start) + to[0];
 
             let end_speed = (from_length - to_length) - start_end.abs();
 
@@ -178,18 +175,6 @@ impl ProgressState {
             }
         }
     }
-}
-
-fn ease_in_out(x: f32) -> f32 {
-    if x < 0.5 {
-        ease_in(x * 2.0) / 2.0
-    } else {
-        (ease_out(((x - 0.5) * 2.0)) / 2.0) + 0.5
-    }
-}
-
-fn ease_in(x: f32) -> f32 {
-    1.0 - (1.0 - x.powf(2.0)).sqrt()
 }
 
 fn ease_out(x: f32) -> f32 {

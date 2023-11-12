@@ -6,6 +6,7 @@ use eframe::egui::{
 	Align, Color32, ColorImage, Context, Layout, RichText, Sense, TextureHandle, TextureOptions,
 	Ui, Vec2,
 };
+use eframe::egui::load::SizedTexture;
 use image::imageops::FilterType;
 use tracing::{debug, error, info, warn};
 use zip::ZipArchive;
@@ -42,13 +43,10 @@ pub struct Plugin {
 enum FileStatus {
     Enabled,
     ForceDisabled,
-    Disabled
 }
 impl Plugin {
     pub fn new(mut path: PathBuf, ctx: &Context) -> Option<Plugin> {
         let extension = path.extension()?.to_str()?;
-        warn!("{extension:?}");
-
         let status = match extension {
             "jar" => FileStatus::Enabled,
             "disabled" => FileStatus::ForceDisabled,
@@ -93,7 +91,7 @@ impl Plugin {
             forced_status: if matches!(status, FileStatus::ForceDisabled) { Some(false)} else  { None},
             status: match status {
                 FileStatus::Enabled => PluginStatus::Enabled,
-                FileStatus::Disabled |  FileStatus::ForceDisabled => PluginStatus::Disabled,
+                FileStatus::ForceDisabled => PluginStatus::Disabled,
             },
             file_status: status,
             path,
@@ -121,7 +119,7 @@ impl Plugin {
 
                 path
             }
-            FileStatus::Disabled | FileStatus::ForceDisabled => {
+            FileStatus::ForceDisabled => {
                 self.path.with_extension("")
             }
         };
@@ -204,7 +202,10 @@ impl Plugin {
             ui.painter().rect(rect, 8.0, bg, stroke);
 
             if let Some(icon) = self.icon.as_ref() {
-                let response = ui.image(icon.id(), Vec2::new(PLUGIN_HEIGHT, PLUGIN_HEIGHT));
+                let response = ui.image(SizedTexture {
+                    id: icon.id(),
+                    size: Vec2::new(PLUGIN_HEIGHT, PLUGIN_HEIGHT),
+                });
                 ui.painter().rect_filled(
                     response.rect,
                     0.0,

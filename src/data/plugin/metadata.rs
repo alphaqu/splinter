@@ -1,10 +1,8 @@
 use std::collections::HashMap;
-use std::fs::File;
 use std::io;
-use std::io::{BufReader, Cursor, Read};
-use eframe::epaint::ahash::{HashSet, HashSetExt};
-use image::DynamicImage;
+use std::io::{Cursor, Read};
 
+use eframe::epaint::ahash::{HashSet, HashSetExt};
 use serde::{Deserialize, Serialize};
 use tracing::{debug, warn};
 use zip::ZipArchive;
@@ -54,21 +52,20 @@ struct FabricMetadata {
     name: String,
     icon: Option<String>,
     depends: Option<HashMap<String, String>>,
-    jars: Option<Vec<FabricJarEntry>>
+    jars: Option<Vec<FabricJarEntry>>,
 }
-
 
 #[derive(Serialize, Deserialize)]
 struct FabricJarEntry {
-    file: String
+    file: String,
 }
 
 impl FabricMetadata {
-    pub fn new<R: Read + io::Seek >(zip: &mut ZipArchive<R>) -> Option<PluginMetadata> {
+    pub fn new<R: Read + io::Seek>(zip: &mut ZipArchive<R>) -> Option<PluginMetadata> {
         let mut file = zip.by_name("fabric.mod.json").ok()?;
         let mut data = Vec::new();
         file.read_to_end(&mut data).ok()?;
-        let mut json: FabricMetadata = serde_json::from_slice(&data).ok()?;
+        let json: FabricMetadata = serde_json::from_slice(&data).ok()?;
         drop(file);
 
         let mut contains = Vec::new();

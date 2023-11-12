@@ -1,34 +1,29 @@
-use std::fs::read_dir;
 use std::path::PathBuf;
 
-use eframe::egui::{Align, Color32, Context, Frame, Id, Layout, Margin, RichText, Rounding, ScrollArea, Sense, Style, Vec2, Visuals, Widget};
+use eframe::egui::{Color32, Context, Frame, Id, Margin, Rounding, Style, Vec2, Visuals};
 use eframe::{egui, App, NativeOptions};
-use rfd::FileDialog;
 use tracing::level_filters::LevelFilter;
-use tracing::warn;
 
-use splinter_animation::{AnimationManager, Lerp};
 use splinter_animation::config::AnimationConfig;
+use splinter_animation::{AnimationManager};
 use splinter_event::{EventSystem, EventTracker};
-use splinter_icon::icon;
-use crate::ApplicationView::{Home, Search};
 
-use crate::data::{Modpack, PluginStatus};
-use crate::ui::{animation, color, load_fonts, NotificationEvent, ProgressStatus, UiSystem};
-use crate::ui::icon::Icon;
-use crate::view::{Header, HeaderEntry};
+use crate::data::PluginStatus;
+use crate::ui::{animation, color, load_fonts};
 use crate::view::home::HomeView;
 use crate::view::search::SearchView;
+use crate::view::Header;
+use crate::ApplicationView::{Home, Search};
 
-pub mod view;
 mod data;
 mod ui;
+pub mod view;
 
 #[derive(Debug)]
 pub struct LoadPathEvent(pub PathBuf);
 #[derive(Debug)]
 pub struct PackStatusEvent {
-    pub is_loaded: bool
+    pub is_loaded: bool,
 }
 
 #[derive(Debug)]
@@ -36,10 +31,8 @@ pub enum PackOperationEvent {
     Undo,
     Redo,
     Split,
-    Invert
+    Invert,
 }
-
-const HEADER_SIZE: f32 = 48.0;
 
 fn main() {
     let subscriber = tracing_subscriber::fmt()
@@ -60,9 +53,12 @@ fn main() {
         Box::new(|cc| {
             let ctx = &cc.egui_ctx;
             ctx.data_mut(|v| {
-                v.insert_persisted(Id::null(), AnimationManager::new(AnimationConfig {
-                    animation_speed: 0.3,
-                }));
+                v.insert_persisted(
+                    Id::null(),
+                    AnimationManager::new(AnimationConfig {
+                        animation_speed: 0.3,
+                    }),
+                );
             });
 
             let mut style = Style::default();
@@ -94,7 +90,7 @@ fn main() {
 
 pub struct ApplicationState {
     modpack_status: ModpackStatus,
-    events: EventSystem
+    events: EventSystem,
 }
 
 pub enum ModpackStatus {
@@ -104,19 +100,18 @@ pub enum ModpackStatus {
         is_loaded: bool,
         can_undo: bool,
         can_redo: bool,
-    }
+    },
 }
 
 #[derive(Debug)]
 pub enum ModpackEvent {
     Load(PathBuf),
-    Exit
+    Exit,
 }
-
 
 pub enum ApplicationView {
     Search(SearchView),
-    Home(HomeView)
+    Home(HomeView),
 }
 
 pub struct Application {
@@ -128,7 +123,7 @@ pub struct Application {
 }
 
 impl App for Application {
-    fn update(&mut self, ctx: &Context, frame: &mut eframe::Frame) {
+    fn update(&mut self, ctx: &Context, _: &mut eframe::Frame) {
         let commander = self.tracker.tick(&mut self.state.events);
         for event in commander.consume::<ModpackEvent>() {
             match event {
@@ -369,6 +364,5 @@ impl App for Application {
                 //                     });
                 //                 }
             });
-
     }
 }
