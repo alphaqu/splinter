@@ -11,8 +11,10 @@ env:
 
 jobs:
   release:
-    name: Release - ${{ matrix.platform.release_for }}
+    name: ${{ matrix.platform.os_name }} with rust ${{ matrix.toolchain }}
+    runs-on: ${{ matrix.platform.os }}
     strategy:
+      fail-fast: false
       matrix:
         platform:
           - release_for: FreeBSD-x86_64
@@ -42,8 +44,6 @@ jobs:
             bin: splinter
             name: splinter-Darwin-aarch64.tar.gz
             command: both
-
-    runs-on: ${{ matrix.platform.os }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
