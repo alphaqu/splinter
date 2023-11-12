@@ -17,13 +17,6 @@ jobs:
       fail-fast: false
       matrix:
         platform:
-          - release_for: FreeBSD-x86_64
-            os: ubuntu-20.04
-            target: x86_64-unknown-freebsd
-            bin: splinter
-            name: splinter-FreeBSD-x86_64.tar.gz
-            command: build
-
           - release_for: Windows-x86_64
             os: windows-latest
             target: x86_64-pc-windows-msvc
@@ -31,6 +24,13 @@ jobs:
             name: splinter-Windows-x86_64.zip
             command: both
 
+          - release_for: Linux-x86_64
+            os: ubuntu-20.04
+            target: x86_64-unknown-linux-musl
+            bin: precious
+            name: splinter-Linux-x86_64.tar.gz
+            command: both
+            
           - release_for: macOS-x86_64
             os: macOS-latest
             target: x86_64-apple-darwin
@@ -49,6 +49,9 @@ jobs:
         uses: actions/checkout@v3
       - name: Cache cargo & target directories
         uses: Swatinem/rust-cache@v2
+      - name: Install gdk-3
+        run: sudo apt-get install -y libgtk-3-dev
+        if:  matrix.platform.os == 'ubuntu-20.04'
       - name: Build binary
         uses: houseabsolute/actions-rust-cross@v0
         with:
