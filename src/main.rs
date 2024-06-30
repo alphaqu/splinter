@@ -1,6 +1,6 @@
 use std::path::PathBuf;
 
-use eframe::egui::{Color32, Context, Frame, Id, Margin, Rounding, Style, Vec2, Visuals};
+use eframe::egui::{Color32, Context, Frame, Id, Margin, Rounding, Style, Vec2, ViewportBuilder, Visuals};
 use eframe::{egui, App, NativeOptions};
 use tracing::level_filters::LevelFilter;
 
@@ -44,17 +44,17 @@ fn main() {
     eframe::run_native(
         "Splinter",
         NativeOptions {
-            initial_window_size: Some(Vec2::new(1000.0, 600.0)),
-            fullscreen: false,
-            maximized: false,
-
+            viewport: ViewportBuilder::default()
+                .with_inner_size(Vec2::new(1000.0, 600.0))
+                .with_fullscreen(false)
+                .with_maximized(false),
             ..NativeOptions::default()
         },
         Box::new(|cc| {
             let ctx = &cc.egui_ctx;
             ctx.data_mut(|v| {
                 v.insert_persisted(
-                    Id::null(),
+                    Id::NULL,
                     AnimationManager::new(AnimationConfig {
                         animation_speed: 0.3,
                     }),
@@ -166,203 +166,6 @@ impl App for Application {
                     Home(view) => view.ui(&mut self.state, ui),
                 }
                 animation(ui).end_tick(ui.ctx());
-
-                //ui.horizontal(|ui| {
-                //                     ui.with_layout(Layout::right_to_left(Align::Center), |ui| {
-                //                         let is_ready = self
-                //                             .modpack
-                //                             .as_ref()
-                //                             .map(|v| !v.is_loading())
-                //                             .unwrap_or(false);
-                //
-                //                         HeaderEntry::button(
-                //                             ui,
-                //                             is_ready,
-                //                             icon!("cancel"),
-                //                             color::RED,
-                //                             || {
-                //                                 if let Some(value) = &mut self.modpack {
-                //                                     value.invert();
-                //                                 };
-                //                             },
-                //                         );
-                //                         ui.add_space(4.0);
-                //
-                //                         HeaderEntry::button(
-                //                             ui,
-                //                             is_ready,
-                //                             icon!("bug_report"),
-                //                             color::GREEN,
-                //                             || {
-                //                                 if let Some(value) = &mut self.modpack {
-                //                                     value.split();
-                //                                 };
-                //                             },
-                //                         );
-                //                         ui.add_space(4.0);
-                //
-                //                         HeaderEntry::button(
-                //                             ui,
-                //                             self.modpack
-                //                                 .as_ref()
-                //                                 .map(|v| !v.is_loading() && v.can_redo())
-                //                                 .unwrap_or(false),
-                //                             icon!("redo"),
-                //                             color::SUBTEXT1,
-                //                             || {
-                //                                 if let Some(value) = &mut self.modpack {
-                //                                     value.redo();
-                //                                 };
-                //                             },
-                //                         );
-                //                         ui.add_space(4.0);
-                //
-                //                         HeaderEntry::button(
-                //                             ui,
-                //                             self.modpack
-                //                                 .as_ref()
-                //                                 .map(|v| !v.is_loading() && v.can_undo())
-                //                                 .unwrap_or(false),
-                //                             icon!("undo"),
-                //                             color::SUBTEXT1,
-                //                             || {
-                //                                 if let Some(value) = &mut self.modpack {
-                //                                     value.undo();
-                //                                 };
-                //                             },
-                //                         );
-                //                         ui.add_space(4.0);
-                //
-                //                         let ctx = ui.ctx().clone();
-                //                         HeaderEntry::path(
-                //                             ui,
-                //                             &mut self.ui,
-                //                             icon!("folder_open"),
-                //                             color::SUBTEXT1,
-                //                             if let Some(path) = &self.path {
-                //                                 path.to_str().unwrap_or("")
-                //                             } else {
-                //                                 "Open mods directory..."
-                //                             }
-                //                             .to_string(),
-                //                             |ui| {
-                //                                 if let Some(path) = FileDialog::new()
-                //                                     .set_directory(
-                //                                         self.path.as_ref().unwrap_or(&PathBuf::from("/")),
-                //                                     )
-                //                                     .pick_folder()
-                //                                 {
-                //                                     ui.set_progress(Some(ProgressStatus::Indeterminate));
-                //
-                //                                     self.path = Some(path.clone());
-                //                                     let modpack = Modpack::new(path, &ctx);
-                //                                     if modpack.is_none() {
-                //                                         warn!("Modpack is none");
-                //                                     }
-                //                                     self.modpack = modpack;
-                //                                 }
-                //                             },
-                //                         );
-                //                     });
-                //                 });
-                //
-                //                 if let Some(modpack) = &mut self.modpack {
-                //                     ui.add_space(12.0);
-                //                     modpack.ui(ui, &mut self.ui);
-                //                 } else {
-                //                     ScrollArea::vertical().show(ui, |ui| {
-                //                         ui.set_min_size(ui.available_size_before_wrap());
-                //                         ui.allocate_ui_at_rect(
-                //                             ui.available_rect_before_wrap().shrink(32.0),
-                //                             |ui| {
-                //                                 ui.add_space(12.0);
-                //                                 ui.label(
-                //                                     RichText::new("Welcome to Splinter!")
-                //                                         .color(color::TEXT)
-                //                                         .strong()
-                //                                         .size(40.0),
-                //                                 );
-                //                                 ui.add_space(8.0);
-                //                                 ui.label(
-                //                                     RichText::new("Binary searching your problems away")
-                //                                         .color(color::SUBTEXT0)
-                //                                         .strong()
-                //                                         .size(20.0),
-                //                                 );
-                //                                 ui.add_space(4.0);
-                //                                 if false {
-                //                                     ui.add_space(32.0);
-                //                                     ui.allocate_ui_with_layout(
-                //                                         Vec2::new(0.0, 32.0),
-                //                                         Layout::left_to_right(Align::Center),
-                //                                         |ui| {
-                //                                             Icon::new(icon!("history"), 24.0, color::SUBTEXT1).ui(ui);
-                //                                             ui.add_space(6.0);
-                //                                             ui.label(
-                //                                                 RichText::new(format!("Recover session"))
-                //                                                     .color(color::SUBTEXT1)
-                //                                                     .strong()
-                //                                                     .size(24.0),
-                //                                             );
-                //                                         },
-                //                                     );
-                //                                 }
-                //
-                //                                 if !self.suggested_instances.is_empty() {
-                //                                     ui.add_space(32.0);
-                //                                     ui.allocate_ui_with_layout(
-                //                                         Vec2::new(0.0, 32.0),
-                //                                         Layout::left_to_right(Align::Center),
-                //                                         |ui| {
-                //                                             Icon::new(icon!("sort"), 24.0, color::TEXT).ui(ui);
-                //                                             ui.add_space(6.0);
-                //                                             ui.label(
-                //                                                 RichText::new(format!("Suggested instances"))
-                //                                                     .color(color::TEXT)
-                //                                                     .strong()
-                //                                                     .size(24.0),
-                //                                             );
-                //                                         },
-                //                                     );
-                //
-                //                                     ui.add_space(8.0);
-                //                                     for path in &self.suggested_instances {
-                //                                         ui.allocate_ui_with_layout(
-                //                                             Vec2::new(ui.available_rect_before_wrap().width(), 24.0),
-                //                                             Layout::left_to_right(Align::Center),
-                //                                             |ui| {
-                //                                                 ui.set_min_size(ui.available_size_before_wrap());
-                //                                                 let response = ui.interact(ui.min_rect(), ui.next_auto_id(), Sense::click_and_drag());
-                //
-                //                                                 if response.hovered() {
-                //
-                //                                                 }
-                //                                                 //ui.painter().rect_filled(
-                //                                                 //    ui.max_rect(),
-                //                                                 //    8.0,
-                //                                                 //    color::BASE,
-                //                                                 //);
-                //                                                 let mut text = RichText::new(format!("{path:?}"))
-                //                                                     .color( color::BLUE)
-                //                                                     .strong()
-                //                                                     .size(16.0);
-                //
-                //                                                 if response.hovered() {
-                //                                                     text = text.color(color::SKY);
-                //                                                     text = text.underline();
-                //                                                 }
-                //                                                 ui.label(
-                //                                                     text,
-                //                                                 );
-                //                                             },
-                //                                         );
-                //                                         ui.add_space(6.0);
-                //                                     }
-                //                                 }
-                //                             },
-                //                         );
-                //                     });
-                //                 }
             });
     }
 }

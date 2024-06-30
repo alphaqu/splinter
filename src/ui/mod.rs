@@ -26,7 +26,7 @@ pub enum Severity {
 }
 
 pub fn animation(ui: &mut Ui) -> AnimationManager {
-    ui.data_mut(|d| d.get_persisted::<AnimationManager>(Id::null()))
+    ui.data_mut(|d| d.get_persisted::<AnimationManager>(Id::NULL))
         .unwrap()
 }
 

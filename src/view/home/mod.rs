@@ -1,8 +1,8 @@
 use std::fs::read_dir;
 use std::path::PathBuf;
 
-use eframe::egui::{Align, Layout, RichText, ScrollArea, Sense, Ui, Vec2, Widget};
-
+use eframe::egui::{Align, Align2, Color32, FontId, FontSelection, Label, Layout, RichText, ScrollArea, Sense, Style, Ui, Vec2, Widget};
+use eframe::egui::text::LayoutJob;
 use splinter_event::EventTracker;
 use splinter_icon::icon;
 
@@ -78,24 +78,6 @@ impl HomeView {
                 ui.add_space(4.0);
 
                 ui.horizontal(|ui| {
-                    //if true {
-                    // 							ui.add_space(32.0);
-                    // 							ui.allocate_ui_with_layout(
-                    // 								Vec2::new(0.0, 32.0),
-                    // 								Layout::left_to_right(Align::Center),
-                    // 								|ui| {
-                    // 									Icon::new(icon!("history"), 24.0, color::SUBTEXT1).ui(ui);
-                    // 									ui.add_space(6.0);
-                    // 									ui.label(
-                    // 										RichText::new(format!("Recover session"))
-                    // 											.color(color::SUBTEXT1)
-                    // 											.strong()
-                    // 											.size(24.0),
-                    // 									);
-                    // 								},
-                    // 							);
-                    // 						}
-
                     if !self.suggested_instances.is_empty() {
                         ui.vertical(|ui| {
                             ui.add_space(32.0);
@@ -106,7 +88,7 @@ impl HomeView {
                                     Icon::new(icon!("history"), 24.0, color::TEXT).ui(ui);
                                     ui.add_space(6.0);
                                     ui.label(
-                                        RichText::new(format!("Recover session"))
+                                        RichText::new("Recover session".to_string())
                                             .color(color::TEXT)
                                             .strong()
                                             .size(24.0),
@@ -121,8 +103,9 @@ impl HomeView {
                                     Layout::left_to_right(Align::Center),
                                     |ui| {
                                         ui.set_min_size(ui.available_size_before_wrap());
+                                        let rect = ui.min_rect();
                                         let response = ui.interact(
-                                            ui.min_rect(),
+                                            rect,
                                             ui.next_auto_id(),
                                             Sense::click_and_drag(),
                                         );
@@ -130,7 +113,8 @@ impl HomeView {
                                         if response.clicked() {
                                             commander.dispatch(ModpackEvent::Load(path.clone()));
                                         }
-
+                                        let style = Style::default();
+                                        let mut layout_job = LayoutJob::default();
                                         let mut text = RichText::new(format!("{path:?}"))
                                             .color(color::BLUE)
                                             .strong()
@@ -140,68 +124,17 @@ impl HomeView {
                                             text = text.color(color::SKY);
                                             text = text.underline();
                                         }
-                                        ui.label(text);
+                                        text.append_to(&mut layout_job, &style, FontSelection::Default, Align::Center);
+                                        
+                                        let painter = ui.painter();
+                                        let galley = painter.layout_job(layout_job);
+                                        painter.galley(rect.left_top(), galley, Color32::RED);
                                     },
                                 );
                                 ui.add_space(6.0);
                             }
                         });
                     }
-
-                    //if !self.suggested_instances.is_empty() {
-                    // 							ui.vertical(|ui| {
-                    // 								ui.add_space(32.0);
-                    // 								ui.allocate_ui_with_layout(
-                    // 									Vec2::new(0.0, 32.0),
-                    // 									Layout::left_to_right(Align::Center),
-                    // 									|ui| {
-                    // 										Icon::new(icon!("star"), 24.0, color::TEXT).ui(ui);
-                    // 										ui.add_space(6.0);
-                    // 										ui.label(
-                    // 											RichText::new(format!("Suggested instances"))
-                    // 												.color(color::TEXT)
-                    // 												.strong()
-                    // 												.size(24.0),
-                    // 										);
-                    // 									},
-                    // 								);
-                    //
-                    // 								ui.add_space(8.0);
-                    // 								for path in &self.suggested_instances {
-                    // 									ui.allocate_ui_with_layout(
-                    // 										Vec2::new(ui.available_rect_before_wrap().width(), 24.0),
-                    // 										Layout::left_to_right(Align::Center),
-                    // 										|ui| {
-                    // 											ui.set_min_size(ui.available_size_before_wrap());
-                    // 											let response = ui.interact(ui.min_rect(), ui.next_auto_id(), Sense::click_and_drag());
-                    //
-                    //
-                    // 											if response.clicked() {
-                    // 												commander.dispatch(ModpackEvent::Load(path.clone()));
-                    // 											}
-                    // 											//ui.painter().rect_filled(
-                    // 											//    ui.max_rect(),
-                    // 											//    8.0,
-                    // 											//    color::BASE,
-                    // 											//);
-                    // 											let mut text = RichText::new(format!("{path:?}"))
-                    // 												.color(color::BLUE)
-                    // 												.strong()
-                    // 												.size(16.0);
-                    //
-                    // 											if response.hovered() {
-                    // 												text = text.color(color::SKY);
-                    // 												text = text.underline();
-                    // 											}
-                    // 											ui.label(
-                    // 												text,
-                    // 											);
-                    // 										},
-                    // 									);
-                    // 									ui.add_space(6.0);
-                    // 								}
-                    // 							});
-                    // 						}
                 });
             });
         });

@@ -2,10 +2,7 @@ use std::fs::{File, rename};
 use std::io::Read;
 use std::path::PathBuf;
 
-use eframe::egui::{
-	Align, Color32, ColorImage, Context, Layout, RichText, Sense, TextureHandle, TextureOptions,
-	Ui, Vec2,
-};
+use eframe::egui::{Align, Color32, ColorImage, Context, Id, LayerId, Layout, Order, RichText, Sense, TextureHandle, TextureOptions, Ui, Vec2};
 use eframe::egui::load::SizedTexture;
 use image::imageops::FilterType;
 use tracing::{debug, error, info, warn};
@@ -169,11 +166,13 @@ impl Plugin {
             ui.add_space(4.0);
             let rect = ui.available_rect_before_wrap();
 
-            let response = ui.interact(
-                rect,
-                ui.next_auto_id(),
-                Sense::click_and_drag(),
-            );
+            let response = ui.with_layer_id(LayerId::new(Order::Foreground, Id::new("above")), |ui| {
+                ui.interact(
+                    rect,
+                    ui.next_auto_id(),
+                    Sense::click_and_drag(),
+                )
+            }).inner;
             if response.clicked() {
                 // Cycle the forced status.
                 self.forced_status = match self.forced_status {
@@ -210,7 +209,7 @@ impl Plugin {
                     response.rect,
                     0.0,
                     Color32::from_rgba_premultiplied(0, 0, 0, ((1.0 - enabled) * 128.0) as u8),
-                )
+                );
             } else {
                 ui.add_space(PLUGIN_HEIGHT);
             }

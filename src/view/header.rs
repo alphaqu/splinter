@@ -133,7 +133,6 @@ impl Header {
                         println!("{option:?}");
                         if let Some(path) = option
                         {
-                            self.progress = Some(ProgressStatus::Indeterminate);
                             commander.dispatch(ModpackEvent::Load(path));
                         }
                     },
@@ -290,7 +289,7 @@ impl HeaderEntry {
                 .get_or(response.id.with("overflow"), || AnimationImpl::simple(1.0))
                 .redirect_with_speed(overflowing as u8 as f32, 0.5)
                 .get();
-            painter.with_clip_rect(rect).galley(text_pos, galley);
+            painter.with_clip_rect(rect).galley(text_pos, galley, color::SUBTEXT1);
 
             //   if overflowing != 0.0 {
             let size = rect.size();

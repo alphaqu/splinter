@@ -17,7 +17,7 @@ pub fn draw_icon(painter: &Painter, icon: u32, pos: Pos2, size: f32, color: Colo
 
     rect.set_height(data);
     // + Vec2::new(0.0, size * 0.1)
-    painter.galley(rect.min,arc);
+    painter.galley(rect.min,arc, color);
 }
 
 pub struct Icon {
